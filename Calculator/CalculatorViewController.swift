@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController, GraphDataSource {
 
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var historyLabel: UILabel!
@@ -116,6 +116,29 @@ class ViewController: UIViewController {
         } else {
             historyLabel.text! += " \(value)"
         }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let nvc = segue.destinationViewController as? UINavigationController {
+            var destination = nvc.visibleViewController
+            if let gvc = destination as? GraphViewController {
+                if let identifier = segue.identifier {
+                    if identifier == "Print graph" {
+                        if let title = historyLabel.text {
+                            gvc.title = "\(title) y"
+                        }
+                        gvc.tempDataSource = self
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    func funcExecute(x: Double) -> Double? {
+        brain.variableValues["M"] = x
+        let result = brain.evaluate()
+        return result
     }
 }
 
