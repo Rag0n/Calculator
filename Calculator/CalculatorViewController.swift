@@ -124,9 +124,8 @@ class CalculatorViewController: UIViewController, GraphDataSource {
             if let gvc = destination as? GraphViewController {
                 if let identifier = segue.identifier {
                     if identifier == "Print graph" {
-                        if let title = historyLabel.text {
-                            gvc.title = "\(title) y"
-                        }
+                        var labelText = brain.description
+                        gvc.title = "y = \(labelText)"
                         gvc.tempDataSource = self
                     }
                 }

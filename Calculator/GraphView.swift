@@ -17,6 +17,7 @@ class GraphView: UIView {
 
     var graphAxes = AxesDrawer()
     var dataSource:GraphDataSource?
+//    @IBInspectable
     var scale:Double = 50 // Removing an @IBInspectable property from code when it has a custom value set in IB results in runtime error.
     var pointsPerUnit:Double = 10
     
@@ -29,10 +30,9 @@ class GraphView: UIView {
         let step = 0.1
         path.moveToPoint(graphCenter)
         
-//        var x = Double(graphCenter.x) / pointsPerUnit // корректно
         var x = range
-
         
+        // рисуем график справа-налево
         if let y = dataSource?.funcExecute(x) {
             path.moveToPoint(CGPoint(x: bounds.maxX, y: CGFloat(y)))
         } else
@@ -48,18 +48,6 @@ class GraphView: UIView {
             x -= step
             
         }
-        
-//        path.stroke()
-//        path.moveToPoint(graphCenter)
-//        
-//        while x > -range {
-//            if let y = dataSource?.funcExecute(x) {
-//                path.addLineToPoint(CGPointMake(bounds.midX + CGFloat(x * pointsPerUnit), bounds.midY - CGFloat(y * pointsPerUnit)))
-//            }
-//            x -= step
-//            
-//        }
-        
 
         path.stroke()
     }
