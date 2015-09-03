@@ -32,6 +32,16 @@ class GraphView: UIView {
         functionPath.stroke()
     }
     
+    func scale(gesture: UIPinchGestureRecognizer) {
+        switch gesture.state {
+        case .Changed: fallthrough
+        case .Ended:
+            pointsPerUnit *= Double(gesture.scale)
+            gesture.scale = 1
+        default: break
+        }
+    }
+    
     private func bezierPathForFunctionWithPrecise(precise: Double) -> UIBezierPath {
         let path = UIBezierPath()
         let width = Double(bounds.maxX) / pointsPerUnit

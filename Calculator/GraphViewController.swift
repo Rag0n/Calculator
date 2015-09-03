@@ -8,10 +8,9 @@
 
 import UIKit
 
-//protocol 
 
 class GraphViewController: UIViewController, GraphDataSource {
-
+    // model
     var program: AnyObject? {
         didSet {
             print("WTF\n\n\n")
@@ -20,18 +19,23 @@ class GraphViewController: UIViewController, GraphDataSource {
             }
         }
     }
+    
     private var brain = CalculatorBrain()
     
 
     @IBOutlet weak var graphView: GraphView! {
         didSet {
             graphView.dataSource = self
+            var recognizer = UIPinchGestureRecognizer(target: graphView, action: "scale:")
+            graphView.addGestureRecognizer(recognizer)
+//            recognizer = UIPanGestureRecognizer(target: graphView, action: "move:")
+//            graphView.addGestureRecognizer(recognizer)
         }
     }
 
     override func viewDidLoad() {
         self.edgesForExtendedLayout = UIRectEdge.None // do not overlap
-        self.graphView.contentMode = UIViewContentMode.Redraw
+        self.graphView.contentMode = UIViewContentMode.Redraw // rotations redraw
     }
     
     func funcExecute(x: Double) -> Double? {
