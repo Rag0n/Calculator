@@ -13,7 +13,6 @@ class GraphViewController: UIViewController, GraphDataSource {
     // model
     var program: AnyObject? {
         didSet {
-            print("WTF\n\n\n")
             if let brainProgram = program as? [String] {
                 brain.program = brainProgram
             }
@@ -26,10 +25,8 @@ class GraphViewController: UIViewController, GraphDataSource {
     @IBOutlet weak var graphView: GraphView! {
         didSet {
             graphView.dataSource = self
-            var recognizer = UIPinchGestureRecognizer(target: graphView, action: "scale:")
-            graphView.addGestureRecognizer(recognizer)
-//            recognizer = UIPanGestureRecognizer(target: graphView, action: "move:")
-//            graphView.addGestureRecognizer(recognizer)
+            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: "scale:"))
+            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: graphView, action: "move:"))
         }
     }
 
