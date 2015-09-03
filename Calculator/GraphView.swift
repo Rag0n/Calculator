@@ -62,70 +62,27 @@ class GraphView: UIView {
     
     private func bezierPathForFunctionWithPrecise(precise: Double) -> UIBezierPath {
         let path = UIBezierPath()
-        
-        var range: CGFloat
-        range = graphCenter.x + xOffset
-        
+        var range = graphCenter.x + xOffset
+        var leftrange = -2 * graphCenter.x + range
         var x = Double(range) / pointsPerUnit
+        let leftBoundary = Double(leftrange) / pointsPerUnit
         
-        // передвигаемся на range вправо
+        // передвигаемся в правый край экрана
         if let y = dataSource?.funcExecute(x) {
             path.moveToPoint(CGPointMake(bounds.maxX, bounds.midY - CGFloat(y)))
         }
         
-        while x > 0 {
+        while x > leftBoundary {
             if let y = dataSource?.funcExecute(x) {
                 if isLegitValue(y) {
                     path.addLineToPoint(CGPointMake(origin!.x + CGFloat(x * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
-                } else {
+                } else { // поддержка прерываемых функций
                      path.moveToPoint(CGPointMake(origin!.x + CGFloat(x * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
                 }
             }
             x -= precise
         }
         
-//        let width = Double(bounds.maxX) / pointsPerUnit // 32
-//        let range = width / 2 // 16
-        
-//        let range = Double(origin!.x) / pointsPerUnit
-//        path.moveToPoint(origin!)
-//        var x = range
-//        
-//        // рисуем график справа-налево
-//        if let y = dataSource?.funcExecute(x) {
-//            path.moveToPoint(CGPoint(x: CGFloat(x * pointsPerUnit * 2), y: bounds.midY))
-//        } else {
-//            path.moveToPoint(CGPoint(x: bounds.maxX, y: bounds.midY))
-//        }
-//        
-//        var steps = Double(bounds.maxX) / precise
-//        steps = Double(bounds.maxX) / 2
-//        while steps > 0 {
-//            if let y = dataSource?.funcExecute(x) {
-//                // mid - координата, потому что экран растет вниз
-//                path.addLineToPoint(CGPointMake(bounds.midX + CGFloat(x * pointsPerUnit), bounds.midY - CGFloat(y * pointsPerUnit)))
-//            }
-//            
-//            x -= precise
-//            steps--
-//        }
-        
-        
-//        // рисуем график справа-налево
-//        if let y = dataSource?.funcExecute(x) {
-//            path.moveToPoint(CGPoint(x: bounds.maxX, y: CGFloat(y)))
-//        } else {
-//            path.moveToPoint(CGPoint(x: bounds.maxX, y: bounds.midY))
-//        }
-//        
-//        while x > -range {
-//            if let y = dataSource?.funcExecute(x) {
-//                // mid - координата, потому что экран растет вниз
-//                path.addLineToPoint(CGPointMake(bounds.midX + CGFloat(x * pointsPerUnit), bounds.midY - CGFloat(y * pointsPerUnit)))
-//            }
-//            x -= precise
-//            
-//        }
         return path
     }
     
