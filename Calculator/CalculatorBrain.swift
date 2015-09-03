@@ -56,11 +56,13 @@ class CalculatorBrain {
                 for opValue in opValues {
                     if let operation = knownOps[opValue] {
                         newOpStack.append(operation)
-                    } else {
-                        let operand = (opValue as NSString).doubleValue
+                    } else if count(opValue) == 1 {
+                        newOpStack.append(.Variable(opValue))
+                    } else if let operand = NSNumberFormatter().numberFromString(opValue)?.doubleValue {
                         newOpStack.append(.Operand(operand))
                     }
                 }
+                opStack = newOpStack
             }
         }
     }

@@ -15,7 +15,7 @@ class CalculatorViewController: UIViewController {
     var userIsInTheMiddleOfTypingANumber = false
     var numberIsDecimal = false
 
-    var brain = CalculatorBrain()
+    private var brain = CalculatorBrain()
     
     var displayValue:Double? {
         get {

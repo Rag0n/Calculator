@@ -8,18 +8,26 @@
 
 import UIKit
 
-protocol GraphDataSource {
+protocol GraphDataSource: class {
     func funcExecute(x: Double) -> Double?
 }
 
 @IBDesignable
 class GraphView: UIView {
 
-    var graphAxes = AxesDrawer()
-    var dataSource:GraphDataSource?
-//    @IBInspectable
-    var scale:Double = 50 // Removing an @IBInspectable property from code when it has a custom value set in IB results in runtime error.
-    var pointsPerUnit:Double = 10
+    weak var dataSource: GraphDataSource?
+    
+    var pointsPerUnit:Double = 10 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    var color = UIColor.blueColor() {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    private var graphAxes = AxesDrawer(color: UIColor.blackColor())
     
     override func drawRect(rect: CGRect) {
         graphAxes.drawAxesInRect(self.bounds, origin: graphCenter, pointsPerUnit: CGFloat(pointsPerUnit))
