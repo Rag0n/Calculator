@@ -17,34 +17,33 @@ class GraphView: UIView {
 
     weak var dataSource: GraphDataSource?
     
-    var pointsPerUnit:Double = 10 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    var color = UIColor.blueColor() {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+    var pointsPerUnit:Double = 10 { didSet { setNeedsDisplay() } }
+    var color = UIColor.blueColor() { didSet { setNeedsDisplay() } }
+    var origin: CGPoint? { didSet { setNeedsDisplay() } }
+    
     private var graphAxes = AxesDrawer(color: UIColor.blackColor())
     
     override func drawRect(rect: CGRect) {
-        graphAxes.drawAxesInRect(self.bounds, origin: graphCenter, pointsPerUnit: CGFloat(pointsPerUnit))
+        origin = origin ?? graphCenter
+        graphAxes.contentScaleFactor = contentScaleFactor
+        graphAxes.drawAxesInRect(self.bounds, origin: self.origin!, pointsPerUnit: CGFloat(pointsPerUnit))
         
+        let functionPath = bezierPathForFunctionWithPrecise(0.1)
+        functionPath.stroke()
+    }
+    
+    private func bezierPathForFunctionWithPrecise(precise: Double) -> UIBezierPath {
         let path = UIBezierPath()
         let width = Double(bounds.maxX) / pointsPerUnit
         let range = width / 2
-        let step = 0.1
-        path.moveToPoint(graphCenter)
+        path.moveToPoint(origin!)
         
         var x = range
         
         // рисуем график справа-налево
         if let y = dataSource?.funcExecute(x) {
             path.moveToPoint(CGPoint(x: bounds.maxX, y: CGFloat(y)))
-        } else
-        {
+        } else {
             path.moveToPoint(CGPoint(x: bounds.maxX, y: bounds.midY))
         }
         
@@ -53,11 +52,10 @@ class GraphView: UIView {
                 // mid - координата, потому что экран растет вниз
                 path.addLineToPoint(CGPointMake(bounds.midX + CGFloat(x * pointsPerUnit), bounds.midY - CGFloat(y * pointsPerUnit)))
             }
-            x -= step
+            x -= precise
             
         }
-
-        path.stroke()
+        return path
     }
     
     private var graphCenter: CGPoint {
