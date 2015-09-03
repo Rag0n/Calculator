@@ -46,6 +46,24 @@ class CalculatorBrain {
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
     var variableValues = [String:Double]()
+    var program: AnyObject { // PropertyList
+        get {
+            return opStack.map { $0.description }
+        }
+        set {
+            if let opValues = newValue as? [String] {
+                var newOpStack = [Op]()
+                for opValue in opValues {
+                    if let operation = knownOps[opValue] {
+                        newOpStack.append(operation)
+                    } else {
+                        let operand = (opValue as NSString).doubleValue
+                        newOpStack.append(.Operand(operand))
+                    }
+                }
+            }
+        }
+    }
     
     
     init() {

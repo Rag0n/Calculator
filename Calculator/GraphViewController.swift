@@ -10,14 +10,22 @@ import UIKit
 
 //protocol 
 
-class GraphViewController: UIViewController {
+class GraphViewController: UIViewController, GraphDataSource {
 
-    var tempDataSource: GraphDataSource?
+    var program: AnyObject? {
+        didSet {
+            print("WTF\n\n\n")
+            if let brainProgram = program as? [String] {
+                brain.program = brainProgram
+            }
+        }
+    }
+    private var brain = CalculatorBrain()
     
 
     @IBOutlet weak var graphView: GraphView! {
         didSet {
-            graphView.dataSource = tempDataSource
+            graphView.dataSource = self
         }
     }
 
@@ -26,6 +34,9 @@ class GraphViewController: UIViewController {
         self.graphView.contentMode = UIViewContentMode.Redraw
     }
     
-
-    
+    func funcExecute(x: Double) -> Double? {
+        brain.variableValues["M"] = x
+        let result = brain.evaluate()
+        return result
+    }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CalculatorViewController: UIViewController, GraphDataSource {
+class CalculatorViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var historyLabel: UILabel!
@@ -126,18 +126,12 @@ class CalculatorViewController: UIViewController, GraphDataSource {
                     if identifier == "Print graph" {
                         var labelText = brain.description
                         gvc.title = "y = \(labelText)"
-                        gvc.tempDataSource = self
+                        gvc.program = brain.program
                     }
                 }
                 
             }
         }
-    }
-    
-    func funcExecute(x: Double) -> Double? {
-        brain.variableValues["M"] = x
-        let result = brain.evaluate()
-        return result
     }
 }
 
