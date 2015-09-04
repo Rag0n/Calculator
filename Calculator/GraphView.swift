@@ -36,26 +36,26 @@ class GraphView: UIView {
     
     private func bezierPathForFunctionWithPrecise(precise: Double) -> UIBezierPath {
         let path = UIBezierPath()
-        var range = graphCenter.x + xOffset
-        var leftrange = -2 * graphCenter.x + range
-        var x = Double(range) / pointsPerUnit
-        let leftBoundary = Double(leftrange) / pointsPerUnit
+        var rightRange = graphCenter.x + xOffset
+        var leftRange = -2 * graphCenter.x + rightRange
+        var rightBoundary = Double(rightRange) / pointsPerUnit
+        let leftBoundary = Double(leftRange) / pointsPerUnit
         
         // передвигаемся в правый край экрана
-        if let y = dataSource?.funcExecute(x) {
+        if let y = dataSource?.funcExecute(rightBoundary) {
             path.moveToPoint(CGPointMake(bounds.maxX, bounds.midY - CGFloat(y)))
         }
         
-        while x > leftBoundary {
-            if let y = dataSource?.funcExecute(x) {
+        while rightBoundary > leftBoundary {
+            if let y = dataSource?.funcExecute(rightBoundary) {
                 if isLegitValue(y) {
-                    path.addLineToPoint(CGPointMake(origin!.x + CGFloat(x * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
+                    path.addLineToPoint(CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
                 } else {
                     // поддержка прерываемых функций
-                    path.moveToPoint(CGPointMake(origin!.x + CGFloat(x * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
+                    path.moveToPoint(CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
                 }
             }
-            x -= precise
+            rightBoundary -= precise
         }
         
         return path
