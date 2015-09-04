@@ -38,6 +38,7 @@ class GraphView: UIView {
         functionPath.stroke()
     }
     
+    // MARK: gesture handlers
     func scale(gesture: UIPinchGestureRecognizer) {
         switch gesture.state {
         case .Changed: fallthrough
@@ -52,11 +53,19 @@ class GraphView: UIView {
         switch gesture.state {
         case .Changed: fallthrough
         case .Ended:
-            var translation = gesture.translationInView(self)
+            let translation = gesture.translationInView(self)
             xOffset -= translation.x
             origin = CGPointMake(origin!.x + translation.x, origin!.y + translation.y)
             gesture.setTranslation(CGPointZero, inView: self)
         default: break
+        }
+    }
+    
+    func moveOrigin(gesture: UITapGestureRecognizer) {
+        if gesture.state == .Ended {
+            let newOrigin = gesture.locationInView(self)
+            xOffset = graphCenter.x - newOrigin.x
+            origin = newOrigin
         }
     }
     

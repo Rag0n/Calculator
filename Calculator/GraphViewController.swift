@@ -27,6 +27,10 @@ class GraphViewController: UIViewController, GraphDataSource {
             graphView.dataSource = self
             graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: "scale:"))
             graphView.addGestureRecognizer(UIPanGestureRecognizer(target: graphView, action: "move:"))
+            let doubleTapGesture = UITapGestureRecognizer(target: graphView, action: "moveOrigin:")
+            doubleTapGesture.numberOfTapsRequired = 2
+            doubleTapGesture.numberOfTouchesRequired = 1
+            graphView.addGestureRecognizer(doubleTapGesture)
         }
     }
 
