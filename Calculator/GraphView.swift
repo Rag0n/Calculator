@@ -30,11 +30,11 @@ class GraphView: UIView {
         graphAxes.contentScaleFactor = contentScaleFactor
         graphAxes.drawAxesInRect(self.bounds, origin: self.origin!, pointsPerUnit: CGFloat(pointsPerUnit))
         
-        let functionPath = bezierPathForFunctionWithPrecise(0.1)
+        let functionPath = bezierPathForFunctionWithStep(0.1)
         functionPath.stroke()
     }
     
-    private func bezierPathForFunctionWithPrecise(precise: Double) -> UIBezierPath {
+    private func bezierPathForFunctionWithStep(step: Double) -> UIBezierPath {
         let path = UIBezierPath()
         var rightRange = graphCenter.x + xOffset
         var leftRange = -2 * graphCenter.x + rightRange
@@ -55,7 +55,7 @@ class GraphView: UIView {
                     path.moveToPoint(CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
                 }
             }
-            rightBoundary -= precise
+            rightBoundary -= step
         }
         
         return path
