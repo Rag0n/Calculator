@@ -23,6 +23,7 @@ class GraphView: UIView {
     
     private var graphAxes = AxesDrawer(color: UIColor.blackColor())
     private var xOffset:CGFloat = 0
+    private var skipValue = true
     
     // MARK: drawing functions
     override func drawRect(rect: CGRect) {
@@ -30,31 +31,34 @@ class GraphView: UIView {
         graphAxes.contentScaleFactor = contentScaleFactor
         graphAxes.drawAxesInRect(self.bounds, origin: self.origin!, pointsPerUnit: CGFloat(pointsPerUnit))
         
+        skipValue = true // move to initial point(rightside)
         let functionPath = bezierPathForFunctionWithStep(0.1)
         functionPath.stroke()
     }
     
     private func bezierPathForFunctionWithStep(step: Double) -> UIBezierPath {
         let path = UIBezierPath()
-        var rightRange = graphCenter.x + xOffset
-        var leftRange = -2 * graphCenter.x + rightRange
-        var rightBoundary = Double(rightRange) / pointsPerUnit
+        let rightRange = graphCenter.x + xOffset // beginning from rightside
+        let leftRange = -2 * graphCenter.x + rightRange // calculating least x value
+        var rightBoundary = Double(rightRange) / pointsPerUnit // x variable
         let leftBoundary = Double(leftRange) / pointsPerUnit
         
-        // передвигаемся в правый край экрана
-        if let y = dataSource?.funcExecute(rightBoundary) {
-            path.moveToPoint(CGPointMake(bounds.maxX, bounds.midY - CGFloat(y)))
-        }
-        
         while rightBoundary > leftBoundary {
-            if let y = dataSource?.funcExecute(rightBoundary) {
-                if isLegitValue(y) {
-                    path.addLineToPoint(CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
+            let y = dataSource?.funcExecute(rightBoundary)
+            
+            if isLegitValue(y) {
+                let newPoint = CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y! * pointsPerUnit))
+                if skipValue != true {
+                    path.addLineToPoint(newPoint)
                 } else {
-                    // поддержка прерываемых функций
-                    path.moveToPoint(CGPointMake(origin!.x + CGFloat(rightBoundary * pointsPerUnit), origin!.y - CGFloat(y * pointsPerUnit)))
+                    path.moveToPoint(newPoint)
+                    skipValue = false
                 }
+            } else {
+                // discontinuous functions
+                skipValue = true
             }
+            
             rightBoundary -= step
         }
         
@@ -97,12 +101,13 @@ class GraphView: UIView {
         return convertPoint(center, fromView: superview)
     }
     
-    private func isLegitValue(inputValue: Double) -> Bool {
-        if inputValue.isNormal || inputValue.isZero {
-            return true
-        } else {
-            return false
+    private func isLegitValue(inputValue: Double?) -> Bool {
+        if let doubleValue = inputValue {
+            if doubleValue.isNormal || doubleValue.isZero {
+                return true
+            }
         }
+        return false
     }
 
 }
